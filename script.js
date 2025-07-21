@@ -11,7 +11,31 @@ const inputDuration = document.querySelector('.form__input--duration');
 const inputCadence = document.querySelector('.form__input--cadence');
 const inputElevation = document.querySelector('.form__input--elevation');
 
+if(navigator.geolocation)
+navigator.geolocation.getCurrentPosition(function(position){
+// console.log(position);
+const {latitude} = position.coords;
+const {longitude} = position.coords;
+const coords = [latitude,longitude];
+console.log(`https://www.google.com/maps/@${latitude},${longitude},15z`);
+const map = L.map('map').setView(coords, 13);
 
-navigator.geolocation.getCurrentPosition(function(){},function(){
+L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+}).addTo(map);
+
+
+    map.on('click',function(mapEvent){
+        const{lat,lng} = mapEvent.latlng;
+        L.marker([lat,lng]).addTo(map)
+    .bindPopup('Workout')
+    .openPopup();
+
+    })
+},function(){
     alert('Could not get ur current location!!')
-})
+},{
+    enableHighAccuracy: true, 
+  }
+);
+
